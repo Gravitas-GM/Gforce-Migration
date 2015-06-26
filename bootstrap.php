@@ -1,5 +1,5 @@
 <?php
-	$classloader = require __DIR__ . '/vendor/autoload.php';
+	require __DIR__ . '/vendor/autoload.php';
 
 	define('SYSTEM_CONFIG_FILE', __DIR__ . '/config.yml');
 	define('SYSTEM_WSDL_FILE', __DIR__ . '/sf.partner.wsdl.xml');

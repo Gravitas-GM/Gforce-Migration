@@ -7,6 +7,4 @@
 	use DaybreakStudios\Salesforce\Client;
 
 	$client = new Client($config['sf.username'], $config['sf.token'], SYSTEM_WSDL_FILE);
-
-	throw new \InvalidArgumentException('Derping!');
 ?>

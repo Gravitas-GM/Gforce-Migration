@@ -8,8 +8,8 @@
 	define('SYSTEM_CSV_FILE', __DIR__ . '/list.csv');
 
 	define('LOGGING_GLOBAL_CHANNEL', 'bootstrap');
-	define('LOGGING_LOG_FILE', __DIR__ . '/logs/log.log');
-	define('LOGGING_FORMAT', "[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n");
+	define('LOGGING_GLOBAL_LOG_FILE', __DIR__ . '/logs/log.log');
+	define('LOGGING_GLOBAL_FORMAT', "[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n");
 	define('LOGGING_GLOBAL_LEVEL', Monolog\Logger::DEBUG);
 
 	Monolog\Registry::addLogger(makeLogger(LOGGING_GLOBAL_CHANNEL, LOGGING_GLOBAL_LEVEL));
@@ -40,15 +40,19 @@
 	function makeLogger($channel, $level) {
 		$logger = new Monolog\Logger($channel);
 
-		if (!file_exists(LOGGING_LOG_FILE)) {
-			if (!file_exists(dirname(LOGGING_LOG_FILE)))
-				mkdir(dirname(LOGGING_LOG_FILE), 755, true);
+		$file = defined('LOGGING_LOG_FILE') ? LOGGING_LOG_FILE : LOGGING_GLOBAL_LOG_FILE;
 
-			touch(LOGGING_LOG_FILE);
+		if (!file_exists($file)) {
+			if (!file_exists(dirname($file)))
+				mkdir(dirname($file), 755, true);
+
+			touch($file);
 		}
 
-		$handler = new Monolog\Handler\StreamHandler(LOGGING_LOG_FILE, $level);
-		$handler->setFormatter(new Monolog\Formatter\LineFormatter(LOGGING_FORMAT));
+		$handler = new Monolog\Handler\StreamHandler($file, $level);
+		$format = defined('LOGGING_FORMAT') ? LOGGING_FORMAT : LOGGING_GLOBAL_FORMAT;
+
+		$handler->setFormatter(new Monolog\Formatter\LineFormatter($format));
 
 		$logger->pushHandler($handler);
 

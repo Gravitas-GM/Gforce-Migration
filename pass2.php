@@ -117,6 +117,34 @@
 					throw getSalesforceException($result[0]);
 
 				$logger->debug(sprintf(MSG_SF_ACCOUNT_CREATED, $result[0]->id), [ $result[0] ]);
+
+				$account = $result[0]->id;
+			} else
+				$logger->info(sprintf(MSG_SF_ACCOUNT_CREATED . ' from row %d', $row->phone, $pos));
+
+			$sob = new SObject();
+			$sob->type = 'Contact';
+			$sob->fields = [
+				'FirstName' => $row->firstName,
+				'LastName' => $row->lastName,
+				'Job_Title__c' => $row->position,
+				'Street' => $row->street,
+				'City' => $row->city,
+				'State' => $row->state,
+				'PostalCode' => $row->zip,
+			];
+
+			if (!DRY_RUN) {
+				$sob->fields['AccountId'] = $account;
+
+				$result = $client->create($sob);
+
+				if (sizeof($result) === 0)
+					throw new RuntimeException(sprintf(MSG_SF_API_UNKNOWN_ERROR, $pos));
+				else if (!$result[0]->success)
+					throw getSalesforceException($result[0]);
+
+				$logger->debug(sprintf(MSG_SF_CONTACT_CREATED, $result[0]->id), [ $result[0] ]);
 			} else
 				$logger->info(sprintf(MSG_SF_CONTACT_CREATED . ' from row %d', $row->phone, $pos));
 		}

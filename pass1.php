@@ -93,14 +93,4 @@
 		} else
 			printf("Adding new contact with phone %s to %s\n", $row->phone, $account->Id);
 	}
-
-	function cleanPhone($value) {
-		$v = '';
-
-		for ($i = 0, $ii = strlen($value); $i < $ii; $i++)
-			if (is_numeric($value[$i]))
-				$v .= $value[$i];
-
-		return $v;
-	}
 ?>

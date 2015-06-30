@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/LartTyler/PHP-DaybreakCommons.git",
-                "reference": "74b8128695ac2d9110801a6a844e71cc7d69bd87"
+                "reference": "59067fa2109d80249ffbfc0518d879a24815fedf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LartTyler/PHP-DaybreakCommons/zipball/74b8128695ac2d9110801a6a844e71cc7d69bd87",
-                "reference": "74b8128695ac2d9110801a6a844e71cc7d69bd87",
+                "url": "https://api.github.com/repos/LartTyler/PHP-DaybreakCommons/zipball/59067fa2109d80249ffbfc0518d879a24815fedf",
+                "reference": "59067fa2109d80249ffbfc0518d879a24815fedf",
                 "shasum": ""
             },
             "require": {
@@ -43,7 +43,7 @@
                 }
             ],
             "description": "A collection of common PHP files that are used between many projects",
-            "time": "2015-06-29 15:41:21"
+            "time": "2015-06-30 14:28:54"
         },
         {
             "name": "dbstudios/salesforce-client",

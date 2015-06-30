@@ -65,7 +65,7 @@
 				$level = defined('LOGGING_LEVEL') ? LOGGING_LEVEL : LOGGING_GLOBAL_LEVEL;
 
 				if (is_string($level))
-					$level = (new ReflectionClass('Monolog\\Logger'))->getConstant($level);
+					$level = (new \ReflectionClass('Monolog\\Logger'))->getConstant($level);
 
 				Monolog\Registry::addLogger(makeLogger(LOGGING_CHANNEL, $level));
 			}
@@ -74,5 +74,15 @@
 		}
 
 		return Monolog\Registry::getInstance(LOGGING_GLOBAL_CHANNEL);
+	}
+
+	function cleanPhone($value) {
+		$v = '';
+
+		for ($i = 0, $ii = strlen($value); $i < $ii; $i++)
+			if (is_numeric($value[$i]))
+				$v .= $value[$i];
+
+		return $v;
 	}
 ?>

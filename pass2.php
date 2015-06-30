@@ -91,7 +91,7 @@
 				else if (!$result[0]->success)
 					throw getSalesforceException($result[0]);
 
-				$logger->debug(sprintf(MSG_SF_CONTACT_CREATED, $result[0]->Id), [ $result[0] ]);
+				$logger->debug(sprintf(MSG_SF_CONTACT_CREATED, $result[0]->id), [ $result[0] ]);
 			} else
 				$logger->info(sprintf(MSG_SF_CONTACT_CREATED . ' from row %d', $row->phone, $pos));
 		} else {
@@ -116,7 +116,7 @@
 				else if (!$result[0]->success)
 					throw getSalesforceException($result[0]);
 
-				$logger->debug(sprintf(MSG_SF_CONTACT_CREATED, $result[0]->Id), [ $result[0] ]);
+				$logger->debug(sprintf(MSG_SF_ACCOUNT_CREATED, $result[0]->id), [ $result[0] ]);
 			} else
 				$logger->info(sprintf(MSG_SF_CONTACT_CREATED . ' from row %d', $row->phone, $pos));
 		}

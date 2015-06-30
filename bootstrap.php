@@ -12,6 +12,17 @@
 	define('LOGGING_GLOBAL_FORMAT', "[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n");
 	define('LOGGING_GLOBAL_LEVEL', Monolog\Logger::DEBUG);
 
+	define('MSG_FILE_MISSING', 'Could not locate file: %s');
+	define('MSG_FILE_NOT_READABLE', 'Could not open %s for reading');
+	define('MSG_SF_API_ERROR', "An error occurred while accessing the Salesforce API (row %d): %s");
+	define('MSG_SF_API_UNKNOWN_ERROR', 'An unknown error occurred while accessing the Salesforce API (row %d)');
+	define('MSG_SF_OBJECT_CREATED', 'Created new %s (%s)');
+	define('MSG_SF_ACCOUNT_CREATED', sprintf(MSG_SF_OBJECT_CREATED, 'Account', '%s'));
+	define('MSG_SF_CONTACT_CREATED', sprintf(MSG_SF_OBJECT_CREATED, 'Contact', '%s'));
+	define('MSG_SF_OBJECT_FOUND', 'Found %s with Id %s');
+	define('MSG_SF_WILL_CREATE_OBJECT', 'No %s match; a new one will be created');
+	define('MSG_SF_UNRELIABLE_PHONE_LOOKUP', 'Row %d\'s phone number is not 10 digits, and may not be reliably looked up');
+
 	Monolog\Registry::addLogger(makeLogger(LOGGING_GLOBAL_CHANNEL, LOGGING_GLOBAL_LEVEL));
 
 	set_error_handler(function($number, $text, $file, $line) {
@@ -49,10 +60,18 @@
 			touch($file);
 		}
 
-		$handler = new Monolog\Handler\StreamHandler($file, $level);
 		$format = defined('LOGGING_FORMAT') ? LOGGING_FORMAT : LOGGING_GLOBAL_FORMAT;
+		$formatter = new Monolog\Formatter\LineFormatter($format);
 
-		$handler->setFormatter(new Monolog\Formatter\LineFormatter($format));
+		if (defined('LOGGING_FORK_TO_STDOUT') && LOGGING_FORK_TO_STDOUT) {
+			$handler = new Monolog\Handler\StreamHandler(fopen('php://stdout', 'w'), $level);
+			$handler->setFormatter($formatter);
+
+			$logger->pushHandler($handler);
+		}
+
+		$handler = new Monolog\Handler\StreamHandler($file, $level);
+		$handler->setFormatter($formatter);
 
 		$logger->pushHandler($handler);
 
@@ -84,5 +103,18 @@
 				$v .= $value[$i];
 
 		return $v;
+	}
+
+	function getPhoneLikeStatement($phone) {
+		return sprintf('%s%%%s%%%s', substr($phone, 0, 3), substr($phone, 3, 3), substr($phone, 6, 4));
+	}
+
+	function getSalesforceException($record) {
+		$error = [];
+
+		foreach ($record->errors as $e)
+			$error[] = $e->statusCode . ' - ' . $e->message;
+
+		return new RuntimeException(sprintf(MSG_SF_API_ERROR, $pos, implode('; ', $error)));
 	}
 ?>

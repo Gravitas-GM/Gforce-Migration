@@ -3,6 +3,6 @@
 		"monolog/monolog": "~1.14",
 		"symfony/yaml": "~2.7",
 		"dbstudios/salesforce-client": "~1.0",
-		"dbstudios/php-commons": "dev-dev"
+		"dbstudios/php-commons": "~4.2"
 	}
 }

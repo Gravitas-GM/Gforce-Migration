@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8d2e91f1883e691d8b8fb67729f4af69",
+    "hash": "1550eadc46e295bae0c7ed63c5f72261",
     "packages": [
         {
             "name": "dbstudios/php-commons",
-            "version": "dev-dev",
+            "version": "4.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LartTyler/PHP-DaybreakCommons.git",
-                "reference": "59067fa2109d80249ffbfc0518d879a24815fedf"
+                "reference": "09ae5c519a93222c66bd5cbd8a0445fae1f4813f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LartTyler/PHP-DaybreakCommons/zipball/59067fa2109d80249ffbfc0518d879a24815fedf",
-                "reference": "59067fa2109d80249ffbfc0518d879a24815fedf",
+                "url": "https://api.github.com/repos/LartTyler/PHP-DaybreakCommons/zipball/09ae5c519a93222c66bd5cbd8a0445fae1f4813f",
+                "reference": "09ae5c519a93222c66bd5cbd8a0445fae1f4813f",
                 "shasum": ""
             },
             "require": {
@@ -43,23 +43,24 @@
                 }
             ],
             "description": "A collection of common PHP files that are used between many projects",
-            "time": "2015-06-30 14:28:54"
+            "time": "2015-07-02 15:43:44"
         },
         {
             "name": "dbstudios/salesforce-client",
-            "version": "1.0.1",
+            "version": "1.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LartTyler/SalesforceClient.git",
-                "reference": "c93e2d2a670dbad9a367046c35743dfc854c2132"
+                "reference": "5656d3c1466ee76f7f3cf665e3fbf0a49ef8365c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LartTyler/SalesforceClient/zipball/c93e2d2a670dbad9a367046c35743dfc854c2132",
-                "reference": "c93e2d2a670dbad9a367046c35743dfc854c2132",
+                "url": "https://api.github.com/repos/LartTyler/SalesforceClient/zipball/5656d3c1466ee76f7f3cf665e3fbf0a49ef8365c",
+                "reference": "5656d3c1466ee76f7f3cf665e3fbf0a49ef8365c",
                 "shasum": ""
             },
             "require": {
+                "dbstudios/php-commons": "~4.0",
                 "developerforce/force.com-toolkit-for-php": "~27.0",
                 "php": ">=5.4"
             },
@@ -80,7 +81,7 @@
                 }
             ],
             "description": "A wrapper around the DeveloperForce SforceClient",
-            "time": "2015-06-29 15:13:32"
+            "time": "2015-07-02 19:17:10"
         },
         {
             "name": "developerforce/force.com-toolkit-for-php",
@@ -281,9 +282,7 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "dbstudios/php-commons": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

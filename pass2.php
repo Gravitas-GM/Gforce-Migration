@@ -37,116 +37,79 @@
 		if (strlen($row->phone) !== 10)
 			$logger->warning(sprintf(MSG_SF_UNRELIABLE_PHONE_LOOKUP, $pos));
 
-		$account = $client->query('
-			select
-				Id
-			from
-				Account
-			where
-				Phone like :phone and
-				BillingStreet = :street and
-				BillingCity = :city and
-				BillingState = :state and
-				BillingPostalCode = :zip
-			limit 1
-		', [
-			':phone' => getPhoneLikeStatement($row->phone),
-			':street' => $row->street,
-			':city' => $row->city,
-			':state' => $row->state,
-			':zip' => $row->zip,
-		]);
+		$qb = $client->createQueryBuilder();
+		$qb
+			->select('Id')
+			->from('Account')
+			->where('Phone like :phone')
+			->andWhere('BillingStreet = :street')
+			->andWhere('BillingCity = :city')
+			->andWhere('BillingState = :state')
+			->andWhere('BillingPostalCode = :zip');
 
-		if ($account->size > 0) {
-			$account = $account[0];
+		$account = $qb
+			->setMaxResults(1)
+			->setParameter('phone', getPhoneLikeStatement($row->phone))
+			->setParameter('street', $row->street)
+			->setParameter('city', $row->city)
+			->setParameter('state', $row->state)
+			->setParameter('zip', $row->zip)
+			->getQuery()
+				->getOneOrNullResult();
 
-			$logger->info(sprintf(MSG_SF_OBJECT_FOUND, 'Account', $account->Id));
+		if ($account === null) {
+			$logger->info(sprintf(MSG_SAVED_FOR_NEXT_PASS, 'Account', implode(', ', [
+				$row->street,
+				$row->city,
+				$row->state,
+				$row->zip,
+			])));
 
-			$contact = $client->query('select Id, Phone from Contact where AccountId = :id and Phone like :phone', [
-				':id' => $account->Id,
-				':phone' => getPhoneLikeStatement($row->phone),
-			]);
-
-			if ($contact->size > 0)
-				continue;
-
-			$sob = new SObject();
-			$sob->type = 'Contact';
-			$sob->fields = [
-				'AccountId' => $account->Id,
-				'FirstName' => $row->firstName,
-				'LastName' => $row->lastName,
-				'Job_Title__c' => $row->position,
-				'Street' => $row->street,
-				'City' => $row->city,
-				'State' => $row->state,
-				'PostalCode' => $row->zip,
-			];
-
-			if (!DRY_RUN) {
-				$result = $client->create($sob);
-
-				if (sizeof($result) === 0)
-					throw new RuntimeException(sprintf(MSG_SF_API_UNKNOWN_ERROR, $pos));
-				else if (!$result[0]->success)
-					throw getSalesforceException($result[0]);
-
-				$logger->debug(sprintf(MSG_SF_CONTACT_CREATED, $result[0]->id), [ $result[0] ]);
-			} else
-				$logger->info(sprintf(MSG_SF_CONTACT_CREATED . ' from row %d', $row->phone, $pos));
-		} else {
-			$logger->info(sprintf(MSG_SF_WILL_CREATE_OBJECT, 'Account'));
-
-			$sob = new SObject();
-			$sob->type = 'Account';
-			$sob->fields = [
-				'Name' => $row->dealership,
-				'Phone' => $row->phone,
-				'BusinessStreet' => $row->street,
-				'BusinessCity' => $row->city,
-				'BusinessState' => $row->state,
-				'BusinessPostalCode' => $row->zip,
-			];
-
-			if (!DRY_RUN) {
-				$result = $client->create($sob);
-
-				if (sizeof($result) === 0)
-					throw new RuntimeException(sprintf(MSG_SF_API_UNKNOWN_ERROR, $pos));
-				else if (!$result[0]->success)
-					throw getSalesforceException($result[0]);
-
-				$logger->debug(sprintf(MSG_SF_ACCOUNT_CREATED, $result[0]->id), [ $result[0] ]);
-
-				$account = $result[0]->id;
-			} else
-				$logger->info(sprintf(MSG_SF_ACCOUNT_CREATED . ' from row %d', $row->phone, $pos));
-
-			$sob = new SObject();
-			$sob->type = 'Contact';
-			$sob->fields = [
-				'FirstName' => $row->firstName,
-				'LastName' => $row->lastName,
-				'Job_Title__c' => $row->position,
-				'Street' => $row->street,
-				'City' => $row->city,
-				'State' => $row->state,
-				'PostalCode' => $row->zip,
-			];
-
-			if (!DRY_RUN) {
-				$sob->fields['AccountId'] = $account;
-
-				$result = $client->create($sob);
-
-				if (sizeof($result) === 0)
-					throw new RuntimeException(sprintf(MSG_SF_API_UNKNOWN_ERROR, $pos));
-				else if (!$result[0]->success)
-					throw getSalesforceException($result[0]);
-
-				$logger->debug(sprintf(MSG_SF_CONTACT_CREATED, $result[0]->id), [ $result[0] ]);
-			} else
-				$logger->info(sprintf(MSG_SF_CONTACT_CREATED . ' from row %d', $row->phone, $pos));
+			continue;
 		}
+
+		$logger->info(sprintf(MSG_SF_OBJECT_FOUND, 'Account', $account->Id));
+
+		$qb = $client->createQueryBuilder();
+		$qb
+			->select('Id')
+			->from('Contact')
+			->where('AccountId = :id')
+			->andWhere('Phone like :phone');
+
+		$contact = $qb
+			->setMaxResults(1)
+			->setParameter('id', $account->Id)
+			->setParameter('phone', getPhoneLikeStatement($row->phone))
+			->getQuery()
+				->getOneOrNullResult();
+
+		if ($contact !== null)
+			continue;
+
+		$sob = new SObject();
+		$sob->type = 'Contact';
+		$sob->fields = [
+			'AccountId' => $account->Id,
+			'FirstName' => $row->firstName,
+			'LastName' => $row->lastName,
+			'Job_Title__c' => $row->position,
+			'Street' => $row->street,
+			'City' => $row->city,
+			'State' => $row->state,
+			'PostalCode' => $row->zip,
+		];
+
+		if (!DRY_RUN) {
+			$result = $client->create($sob);
+
+			if (sizeof($result) === 0)
+				throw new RuntimeException(sprintf(MSG_SF_API_UNKNOWN_ERROR, $pos));
+			else if (!$result[0]->success)
+				throw getSalesforceException($result[0]);
+
+			$logger->debug(sprintf(MSG_SF_CONTACT_CREATED, $result[0]->id), [ $result[0] ]);
+		} else
+			$logger->info(sprintf(MSG_SF_CONTACT_CREATED . ' from row %d', $row->phone, $pos));
 	}
 ?>

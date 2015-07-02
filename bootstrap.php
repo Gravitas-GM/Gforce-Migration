@@ -14,6 +14,7 @@
 
 	define('MSG_FILE_MISSING', 'Could not locate file: %s');
 	define('MSG_FILE_NOT_READABLE', 'Could not open %s for reading');
+	define('MSG_SAVED_FOR_NEXT_PASS', 'No %s was found for %s; saving for next pass');
 	define('MSG_SF_API_ERROR', "An error occurred while accessing the Salesforce API (row %d): %s");
 	define('MSG_SF_API_UNKNOWN_ERROR', 'An unknown error occurred while accessing the Salesforce API (row %d)');
 	define('MSG_SF_OBJECT_CREATED', 'Created new %s (%s)');

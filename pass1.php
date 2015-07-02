@@ -23,22 +23,12 @@
 	if ($f === false)
 		throw new Exception('Could not open ' . SYSTEM_CSV_FILE . ' for reading');
 
-	// Dealership, First Name, Last Name, Position, Email, Phone, Street, County, City, State, Zip Code
 	$reader = new CsvFileReader($f);
-	$reader
-		->addField('dealership')
-		->addField('firstName')
-		->addField('lastName')
-		->addField('position')
-		->addField('email')
-		->addField('phone', 'cleanPhone')
-		->addField('street')
-		->addField('county')
-		->addField('city')
-		->addField('state')
-		->addField('zip');
+	$reader->addFields($config['csv.fields']);
 
-	while (!$reader->eof()) {
+	$pos = 0;
+
+	while (!$reader->eof() && ++$pos) {
 		$row = $reader->read();
 
 		$logger->debug('-- Read CSV row', [ $row ]);

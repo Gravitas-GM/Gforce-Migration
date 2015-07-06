@@ -14,7 +14,8 @@
 
 	define('MSG_FILE_MISSING', 'Could not locate file: %s');
 	define('MSG_FILE_NOT_READABLE', 'Could not open %s for reading');
-	define('MSG_PASS_SUMMARY', 'Pass #%d complete. There were a total of %d contact%s created and %d contact%s matched to existing contacts. In this pass, %d account%s could not be found, and will be created in later passes.');
+	define('MSG_PASS_SUMMARY', 'Pass #%d complete. There were a total of %d contact%s created and %d contact%s matched to existing contacts. In this pass, %d account%s could not be found, and will be created in later passes');
+	define('MSG_PASS3_SUMMARY', 'Pass #3 complete. In this pass, %d previously unmatched account%s %s found. There were a total of %d contact%s matched to existing contacts, %d new account%s created, and %d new contact%s created');
 	define('MSG_SAVED_FOR_NEXT_PASS', 'No %s was found for %s; saving for next pass');
 	define('MSG_SF_API_ERROR', "An error occurred while accessing the Salesforce API (row %d): %s");
 	define('MSG_SF_API_UNKNOWN_ERROR', 'An unknown error occurred while accessing the Salesforce API (row %d)');
@@ -108,6 +109,9 @@
 	}
 
 	function getPhoneLikeStatement($phone) {
+		if (strlen($phone) !== 10)
+			return $phone;
+
 		return sprintf('%s%%%s%%%s', substr($phone, 0, 3), substr($phone, 3, 3), substr($phone, 6, 4));
 	}
 

@@ -48,11 +48,18 @@
 		if (strlen($row->phone) !== 10)
 			$logger->warning(sprintf(MSG_SF_UNRELIABLE_PHONE_LOOKUP, $pos));
 
+		$orx = [
+			'Phone like :phone',
+		];
+
+		if (strlen($row->altPhone) === 10)
+			$orx[] = 'Phone like :alt';
+
 		$qb = $client->createQueryBuilder();
 		$qb
-			->select('Id')
+			->select('Id', 'Name')
 			->from('Account')
-			->where('Phone like :phone')
+			->where(call_user_func_array([ $qb->expr(), 'orX' ], $orx))
 			->andWhere('BillingStreet = :street')
 			->andWhere('BillingCity = :city')
 			->andWhere('BillingState = :state')
@@ -61,6 +68,7 @@
 		$account = $qb
 			->setMaxResults(1)
 			->setParameter('phone', getPhoneLikeStatement($row->phone))
+			->setParameter('alt', getPhoneLikeStatement($row->altPhone))
 			->setParameter('street', $row->street)
 			->setParameter('city', $row->city)
 			->setParameter('state', $row->state)
@@ -79,21 +87,34 @@
 			])));
 
 			continue;
-		}
+		} else if (strtolower($account->fields->Name) === strtolower($row->dealership))
+			continue;
 
 		$logger->info(sprintf(MSG_SF_OBJECT_FOUND, 'Account', $account->Id));
+
+		$orx = [
+			'Phone like :phone',
+			'Phone_2__c like :phone',
+		];
+
+		if (strlen($row->altPhone) === 10)
+			$orx = array_merge($orx, [
+				'Phone like :alt',
+				'Phone_2__c like :alt',
+			]);
 
 		$qb = $client->createQueryBuilder();
 		$qb
 			->select('Id')
 			->from('Contact')
 			->where('AccountId = :id')
-			->andWhere('Phone like :phone');
+			->andWhere(call_user_func_array([ $qb->expr(), 'orX' ], $orx));
 
 		$contact = $qb
 			->setMaxResults(1)
 			->setParameter('id', $account->Id)
 			->setParameter('phone', getPhoneLikeStatement($row->phone))
+			->setParameter('alt', getPhoneLikeStatement($row->altPhone))
 			->getQuery()
 				->getOneOrNullResult();
 
@@ -109,6 +130,8 @@
 			'AccountId' => $account->Id,
 			'FirstName' => $row->firstName,
 			'LastName' => $row->lastName,
+			'Phone' => $row->phone,
+			'Phone_2__c' => $row->altPhone,
 			'Job_Title__c' => $row->position,
 			'Street' => $row->street,
 			'City' => $row->city,
@@ -134,7 +157,7 @@
 		}
 	}
 
-	printf("\n\n" . MSG_PASS_SUMMARY . "\n\n",
+	$logger->info(sprintf(MSG_PASS_SUMMARY,
 		2,
 		$counter->get(COUNT_CREATED),
 		$counter->get(COUNT_CREATED) !== 1 ? 's' : '',
@@ -142,5 +165,5 @@
 		$counter->get(COUNT_EXISTING) !== 1 ? 's' : '',
 		$counter->get(COUNT_NEXT_PASS),
 		$counter->get(COUNT_NEXT_PASS) !== 1 ? 's' : ''
-	);
+	));
 ?>

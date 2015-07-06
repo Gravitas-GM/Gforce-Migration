@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "dbstudios/php-commons",
-            "version": "4.3.0",
+            "version": "4.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LartTyler/PHP-DaybreakCommons.git",
-                "reference": "09ae5c519a93222c66bd5cbd8a0445fae1f4813f"
+                "reference": "d2fc8b7f9de135898684f39779966c1b624c64e5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LartTyler/PHP-DaybreakCommons/zipball/09ae5c519a93222c66bd5cbd8a0445fae1f4813f",
-                "reference": "09ae5c519a93222c66bd5cbd8a0445fae1f4813f",
+                "url": "https://api.github.com/repos/LartTyler/PHP-DaybreakCommons/zipball/d2fc8b7f9de135898684f39779966c1b624c64e5",
+                "reference": "d2fc8b7f9de135898684f39779966c1b624c64e5",
                 "shasum": ""
             },
             "require": {
@@ -43,7 +43,7 @@
                 }
             ],
             "description": "A collection of common PHP files that are used between many projects",
-            "time": "2015-07-02 15:43:44"
+            "time": "2015-07-06 13:55:12"
         },
         {
             "name": "dbstudios/salesforce-client",

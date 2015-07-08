@@ -1,5 +1,6 @@
 <?php
 	ini_set('auto_detect_line_endings', true);
+	ini_set('memory_limit', '512M');
 
 	require __DIR__ . '/vendor/autoload.php';
 

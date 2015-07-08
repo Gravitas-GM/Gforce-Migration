@@ -86,17 +86,6 @@
 
 		$logger->debug('Found Account with Id ' . $account->Id, [ $account ]);
 
-		$orx = [
-			'Phone like :phone',
-			'Phone_2__c like :phone',
-		];
-
-		if (strlen($row->altPhone) === 10)
-			$orx = array_merge($orx, [
-				'Phone like :alt',
-				'Phone_2__c like :alt',
-			]);
-
 		$qb = $client->createQueryBuilder();
 		$qb
 			->select('Id')

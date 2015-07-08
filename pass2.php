@@ -92,17 +92,6 @@
 
 		$logger->info(sprintf(MSG_SF_OBJECT_FOUND, 'Account', $account->Id));
 
-		$orx = [
-			'Phone like :phone',
-			'Phone_2__c like :phone',
-		];
-
-		if (strlen($row->altPhone) === 10)
-			$orx = array_merge($orx, [
-				'Phone like :alt',
-				'Phone_2__c like :alt',
-			]);
-
 		$qb = $client->createQueryBuilder();
 		$qb
 			->select('Id')

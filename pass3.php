@@ -57,8 +57,6 @@
 
 		$account = $qb
 			->setMaxResults(1)
-			->setParameter('name', $row->dealership)
-			->setParameter('phone', getPhoneLikeStatement($row->phone))
 			->setParameter('street', $row->street)
 			->setParameter('city', $row->city)
 			->setParameter('state', $row->state)
@@ -130,7 +128,12 @@
 				->select('Id')
 				->from('Contact')
 				->where('AccountId = :id')
-				->andWhere(call_user_func_array([ $qb->expr(), 'orX' ], $orx));
+				->andWhere($qb->expr()->orX(
+					'Phone like :phone',
+					'Phone_2__c like :phone',
+					'Phone like :alt',
+					'Phone_2__c like :alt'
+				));
 
 			$contact = $qb
 				->setMaxResults(1)

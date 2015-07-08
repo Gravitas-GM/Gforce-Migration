@@ -7,6 +7,7 @@
 	define('SYSTEM_CONFIG_FILE', __DIR__ . '/config.yml');
 	define('SYSTEM_WSDL_FILE', __DIR__ . '/sf.partner.wsdl.xml');
 	define('SYSTEM_CSV_FILE', __DIR__ . '/list.csv');
+	define('SYSTEM_INVALIDS_FILE', __DIR__ . '/invalid.csv');
 
 	define('LOGGING_GLOBAL_CHANNEL', 'bootstrap');
 	define('LOGGING_GLOBAL_LOG_FILE', __DIR__ . '/logs/log.log');
@@ -15,6 +16,7 @@
 
 	define('MSG_FILE_MISSING', 'Could not locate file: %s');
 	define('MSG_FILE_NOT_READABLE', 'Could not open %s for reading');
+	define('MSG_INVALIDS_READ', 'Loaded %d invalid phone number%s');
 	define('MSG_PASS_SUMMARY', 'Pass #%d complete. There were a total of %d contact%s created and %d contact%s matched to existing contacts. In this pass, %d account%s could not be found, and will be created in later passes');
 	define('MSG_PASS3_SUMMARY', 'Pass #3 complete. In this pass, %d previously unmatched account%s %s found. There were a total of %d contact%s matched to existing contacts, %d new account%s created, and %d new contact%s created');
 	define('MSG_SAVED_FOR_NEXT_PASS', 'No %s was found for %s; saving for next pass');

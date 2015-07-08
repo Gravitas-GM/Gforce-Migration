@@ -23,6 +23,26 @@
 	$logger = getActiveLogger();
 	$client = new Client($config['sf.username'], $config['sf.token'], SYSTEM_WSDL_FILE);
 
+	if (!file_exists(SYSTEM_INVALIDS_FILE))
+		throw new IOException(sprintf(MSG_FILE_MISSING, SYSTEM_INVALIDS_FILE));
+
+	$f = fopen(SYSTEM_INVALIDS_FILE, 'r');
+
+	if ($f === false)
+		throw new IOException(sprintf(MSG_FILE_NOT_READABLE, SYSTEM_INVALIDS_FILE));
+
+	$reader = new CsvFileReader($f);
+	$reader->addField('phone', 'cleanPhone');
+
+	$invalids = [];
+
+	while (!$reader->eof())
+		$invalids[$reader->read()->phone] = null;
+
+	$logger->info(sprintf(MSG_INVALIDS_READ, sizeof($invalids), sizeof($invalids) !== 1 ? 's' : ''));
+
+	$reader->close();
+
 	if (!file_exists(SYSTEM_CSV_FILE))
 		throw new IOException('Could not locate ' . SYSTEM_CSV_FILE);
 
